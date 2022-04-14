@@ -99,9 +99,11 @@ class Timer {
             else {
                 let timeleft = (this.Points[0].time - this.now()) / 1000
                 if (timeleft <= 0) this.startPlaying()
-                $('#countdown').text(TtoMMSS(Math.max(timeleft + 1, 0)))
+                this.Timeleft = this.Timeleft * 0.92 + timeleft * 0.08
+                $('#countdown').text(TtoMMSS(Math.max(this.Timeleft + 1, 0)))
             }
         }
+        this.Timeleft = 0
         this.startUpdate()
     }
 
