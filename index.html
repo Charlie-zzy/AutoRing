@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdui@1.0.2/dist/css/mdui.min.css" />
+  <link rel="stylesheet" href="./style.css" />
+  <title>自助放铃</title>
+</head>
+
+<body>
+  <div class="mdui-card list-box">
+    <div class="countdown-text mdui-text-color-white" id="status">NEXT</div>
+    <div class="mdui-color-green mdui-text-color-white" id="countdown">00:00</div>
+    <div class="mdui-list" id="list"></div>
+  </div>
+
+  <div class="mdui-container">
+
+    <div class="mdui-card">
+      <div class="mdui-card-actions">
+        <button class="mdui-btn mdui-ripple mdui-color-indigo" onclick="handleDelay(10)">拖堂 10s</button>
+        <button class="mdui-btn mdui-ripple" onclick="handleDelay(60)">拖堂 1min</button>
+        <button class="mdui-btn mdui-ripple" onclick="handleDelay(300)">拖堂 5min</button>
+      </div>
+    </div>
+
+
+    <div class="mdui-card">
+      <div class="mdui-card-actions">
+        <button class="mdui-btn mdui-ripple mdui-color-cyan mdui-text-color-white" onclick="togglePlay()">
+          <i class="mdui-icon material-icons mdui-icon-left" id="play-icon">play_arrow</i>
+          <div id="play">播放</div>
+        </button>
+        <button class="mdui-btn mdui-color-red-400" onclick="handleStop()">
+          <i class="mdui-icon material-icons mdui-icon-left">block</i>
+          <div id="skip">跳过</div>
+        </button>
+        <button class="mdui-btn" onclick="toggleMute()">
+          <i class="mdui-icon material-icons mdui-icon-left" id="mute-icon">volume_up</i>静音</button>
+      </div>
+    </div>
+
+    <div class="mdui-card">
+      <div class="mdui-card-actions audio-card"></div>
+    </div>
+
+    <div class="mdui-card auto-control">
+      <button class="mdui-btn mdui-ripple auto" onclick="toggleAuto(true)">自动</button>
+      <button class="mdui-btn mdui-ripple manual" onclick="toggleAuto(false)">手动</button>
+    </div>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/mdui@1.0.2/dist/js/mdui.min.js"></script>
+  <script>
+    const $ = mdui.$;
+    function TtoMMSS(t) {
+      const [m, s] = [~~(t / 60), ~~(t % 60)]
+      return `${m < 10 ? 0 : ''}${m}:${s < 10 ? 0 : ''}${s}`
+    }
+
+    let mode,
+      songPreset,
+      songBuf = Array(6)
+  </script>
+  <script src="stroage.js"></script>
+  <script src="timer.js"></script>
+  <script src="main.js"></script>
+</body>
+
+</html>
