@@ -14,7 +14,7 @@ if (!data.has('songPreset'))
 
         { title: '眼操', icon: 'looks_4' },
         { title: '晚自习', icon: 'looks_5' },
-        { title: '占位置', icon: 'looks_6' },
+        { title: '诈骗', icon: 'looks_6' },
     ])
 
 songPreset = data.get('songPreset')
@@ -70,9 +70,19 @@ async function handleChange(id) {
             refreshSongPreset()
         })
 }
-for (let i = 0; i < songPreset.length; i++) {
+for (let i = 0; i < 5; i++) {
     handleChange(i)
 }
+fetch(`https://api.i-meto.com/meting/api?server=netease&type=url&id=5221167&auth=99dfa3046c660a386a4aef99d8df2fabe78c065a`)
+        .then((res) => res.arrayBuffer())
+        .then((buf) => audioCtx.decodeAudioData(buf))
+        .then((buf) => {
+            console.log('awa')
+            songBuf[5] = buf
+            songPreset[5].text = '✓ ' + TtoMMSS(buf.duration)
+            refreshSongPreset()
+        })
+
 // hand
 function handleDelay(sec) {
     timer.Points[0].time += sec * 1000
