@@ -5,17 +5,16 @@ let BufferNode,
 // 连 连 看
 GainNode.connect(audioCtx.destination)
 
-// songPreset 默认值设置
-if (!data.has('songPreset'))
-    data.set('songPreset', [
-        { title: '上课', icon: 'looks_one' },
-        { title: '下课', icon: 'looks_two' },
-        { title: '预铃', icon: 'looks_3' },
 
-        { title: '眼操', icon: 'looks_4' },
-        { title: '晚自习', icon: 'looks_5' },
-        { title: '诈骗', icon: 'looks_6' },
-    ])
+data.set('songPreset', [
+    { title: '上课', icon: 'looks_one' },
+    { title: '下课', icon: 'looks_two' },
+    { title: '预铃', icon: 'looks_3' },
+
+    { title: '眼操', icon: 'looks_4' },
+    { title: '晚自习', icon: 'looks_5' },
+    { title: '诈骗', icon: 'looks_6' },
+])
 
 songPreset = data.get('songPreset')
 refreshSongPreset()
