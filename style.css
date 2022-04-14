@@ -1,0 +1,122 @@
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    color: #2c3e50;
+
+    min-height: 100vh;
+    overflow: hidden;
+
+    display: flex;
+    justify-content: center;
+
+    user-select: none;
+}
+
+.mdui-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.mdui-card {
+    margin: 20px;
+    width: fit-content;
+    border-radius: 8px;
+
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2),
+        0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12) !important;
+}
+
+.mdui-btn {
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+label:hover {
+    cursor: pointer;
+}
+
+input {
+    display: none;
+}
+
+.audio-card {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    text-align: center;
+}
+.audio-card > div {
+    display: flex;
+    flex-direction: row;
+}
+
+.audio-card-item {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    padding: 6px;
+    margin: 6px;
+
+    /* box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14), */
+    /* 0 1px 10px 0 rgba(0, 0, 0, 0.12) !important; */
+
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+        box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1),
+        -webkit-box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1);
+    will-change: background-color;
+}
+
+.audio-card-item:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+.audio-card-item:active {
+    background-color: rgba(0, 0, 0, 0.165);
+}
+
+.audio-card-item > .title {
+    font-size: 1.2em;
+    font-weight: 600;
+}
+.audio-card-item > i {
+    font-size: 2em;
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+.audio-card-item > .filename {
+    font-size: 14px;
+    color: #2c3e5084;
+    vertical-align: bottom;
+}
+
+.list-box {
+    width: 30vw;
+    height: 95vh;
+}
+.list-box > * {
+    transition: all 0.3s;
+}
+.list-box > #countdown {
+    text-align: center;
+    font-size: 4rem;
+    font-weight: 700;
+    padding: 4px 0;
+    text-shadow: 2px 2px 6px rgba(70, 70, 70, 0.5);
+}
+.list-box > .countdown-text {
+    position: absolute;
+    font-size: 1rem;
+    font-weight: 600;
+    left: 12px;
+    top: 8px;
+    text-shadow: 0 0 6px rgba(160, 160, 160, 0.3);
+}
+
+.auto-control {
+    padding: 12px;
+    transform: scale(1.2);
+}
