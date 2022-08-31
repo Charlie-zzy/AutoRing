@@ -21,29 +21,23 @@
 
     <div class="mdui-card">
       <div class="mdui-card-actions">
-        <button class="mdui-btn mdui-ripple mdui-color-indigo" onclick="handleDelay(10)">拖堂 10s</button>
+        <button class="mdui-btn mdui-ripple-cyan" onclick="handleDelay(10)">拖堂 10s</button>
         <button class="mdui-btn mdui-ripple" onclick="handleDelay(60)">拖堂 1min</button>
-        <button class="mdui-btn mdui-ripple" onclick="handleDelay(300)">拖堂 5min</button>
-      </div>
-    </div>
-
-
-    <div class="mdui-card">
-      <div class="mdui-card-actions">
-        <button class="mdui-btn mdui-ripple mdui-color-cyan mdui-text-color-white" onclick="togglePlay()">
-          <i class="mdui-icon material-icons mdui-icon-left" id="play-icon">play_arrow</i>
-          <div id="play">播放</div>
-        </button>
         <button class="mdui-btn mdui-color-red-400" onclick="handleStop()">
           <i class="mdui-icon material-icons mdui-icon-left">block</i>
           <div id="skip">跳过</div>
         </button>
-        <button class="mdui-btn" onclick="toggleMute()">
+        <button class="mdui-btn mdui-color-indigo" onclick="toggleMute()">
           <i class="mdui-icon material-icons mdui-icon-left" id="mute-icon">volume_up</i>静音</button>
       </div>
     </div>
 
-    <div class="mdui-card">
+    <div class="mdui-card" style="display: flex; flex-direction: column;">
+      <label class="mdui-checkbox mdui-center" style="font-weight: 600; margin-top: 10px;" onchange="toggleNew()">
+        <input type="checkbox" id="new" disabled/>
+        <i class="mdui-checkbox-icon"></i>
+        启用自制铃声
+      </label>
       <div class="mdui-card-actions audio-card"></div>
     </div>
 

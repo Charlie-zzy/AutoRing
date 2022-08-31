@@ -1,72 +1,77 @@
 const Points = {
     // 早自习
-    '06:58': 3,
-    '07:00': 1,
-    '07:40': 2,
+    '06:48': 3,
+    '06:50': 1,
+    '07:30': 2,
 
-    '07:58': 3,
-    '08:00': 1,
-    '08:40': 2,
+    // 1
+    '07:38': 3,
+    '07:40': 1,
+    '08:20': 2,
 
-    '08:58': 3,
-    '09:00': 1,
-    '09:40': 4, // 眼操
+    // 2
+    '08:28': 3,
+    '08:30': 1,
+    '09:10': 4, // 眼操
 
-    '09:58': 3,
-    '10:00': 1,
-    '10:40': 2,
+    // 3
+    '09:23': 3,
+    '09:25': 1,
+    '10:05': 2,
 
-    '10:58': 3,
-    '11:00': 1,
-    '11:40': 2,
+    // 4
+    '10:28': 3,
+    '10:30': 1,
+    '11:10': 2,
+
+    // 5
+    '11:18': 3,
+    '11:20': 1,
+    '12:00': 2,
 
     // 午检
     '13:28': 3,
     '13:30': 1,
 
-    '13:58': 3,
-    '14:00': 1,
-    '14:40': 4, // 眼操
+    // 6
+    '13:38': 3,
+    '13:40': 1,
+    '14:20': 4, // 眼操
 
-    '14:58': 3,
-    '15:00': 1,
-    '15:40': 2,
+    // 7
+    '14:43': 3,
+    '15:45': 1,
+    '15:25': 2,
 
-    '15:58': 3,
-    '16:00': 1,
-    '16:40': 2,
+    // 8
+    '15:33': 3,
+    '15:35': 1,
+    '16:15': 2,
 
-    // 晚自习
+    // 9
+    '16:23': 3,
+    '16:25': 1,
+    '17:00': 2,
+
+    // 晚自习 1
     '17:58': 3,
     '18:00': 1,
     '19:00': 2,
 
-    '19:18': 3,
-    '19:20': 1,
-    '20:20': 5,
+    // 晚自习 2
+    '19:08': 3,
+    '19:10': 1,
+    '20:10': 2,
 
-    // TEST
-    '07:40': 3,
-    '07:41': 3,
-    '07:42': 3,
-    '07:43': 3,
-    '07:44': 3,
-    '07:45': 3,
-    '07:46': 3,
-    '07:53:00': 3,
-    '07:53:06': 3,
-    '07:53:13': 3,
-    '07:53:24': 3,
-    '07:53:35': 3,
-    '07:53:48': 3,
-    '07:53:51': 3,
-    '07:48': 3,
-    '07:49': 3,
+    // 晚自习 3
+    '20:18': 3,
+    '20:20': 1,
+    '21:20': 5, // 卡农
 }
 
 class Timer {
     constructor() {
-        this.today = ~~(this.now() / 3600000) * 3600000
+        this.today = ~~(Date.now() / 3600000) * 3600000
         this.nowPlaying = 0
         this.Points = []
         for (const d in Points) {
@@ -75,7 +80,7 @@ class Timer {
             this.Points.push({ time, id, d })
         }
         this.Points.sort((a, b) => a.time - b.time)
-        this.Points = this.Points.filter(({ time }) => time >= this.now())
+        this.Points = this.Points.filter(({ time }) => time >= Date.now())
 
         $('#list').empty()
         this.Points.forEach(({ time, id, d }, i) => {
@@ -97,11 +102,13 @@ class Timer {
             requestAnimationFrame(this.startUpdate)
             if (!mode || this.Points.length == 0) $('#countdown').text('--:--')
             else {
-                let timeleft = (this.Points[0].time - this.now()) / 1000
+                let timeleft = (this.Points[0].time - Date.now()) / 1000
                 if (timeleft <= 0) this.startPlaying()
-                $('#countdown').text(TtoMMSS(Math.max(timeleft + 1, 0)))
+                this.Timeleft = this.Timeleft * 0.92 + timeleft * 0.08
+                $('#countdown').text(TtoMMSS(Math.max(this.Timeleft + 1, 0)))
             }
         }
+        this.Timeleft = 0
         this.startUpdate()
     }
 
@@ -121,6 +128,7 @@ class Timer {
         $(`#countdown`).addClass('mdui-color-red')
         $(`#countdown`).removeClass('mdui-color-green')
     }
+
     stopPlaying() {
         console.log('stop')
         if ($($(`#list`).children()[0]).hasClass('mdui-list-item-active'))
@@ -128,10 +136,6 @@ class Timer {
         $(`#status`).text('NEXT')
         $(`#countdown`).removeClass('mdui-color-red')
         $(`#countdown`).addClass('mdui-color-green')
-    }
-
-    now() {
-        return +new Date()
     }
 
     HHMMtoT(str) {
