@@ -104,10 +104,18 @@ class Timer {
 
         this.startUpdate = () => {
             requestAnimationFrame(this.startUpdate)
-            if (!mode || this.Points.length == 0) $('#countdown').text('--:--')
+            if (this.Points.length == 0) $('#countdown').text('--:--')
             else {
                 let timeleft = (this.Points[0].time - Date.now()) / 1000
-                if (timeleft <= 0) this.startPlaying()
+                if (timeleft <= 0) {
+                    if (mode) {
+                        this.startPlaying()
+                    } else {
+                        this.nowPlaying++
+                        this.Points.splice(0, 1)
+                        $($(`#time-list`).children()[0]).remove()
+                    }
+                }
                 this.Timeleft = this.Timeleft * (1 - .1) + timeleft * .1
                 $('#countdown').text(TtoMMSS(Math.max(this.Timeleft + 1, 0)))
             }
@@ -121,7 +129,7 @@ class Timer {
     }
 
     startPlaying() {
-        console.log('start')
+        console.log('%cAUTO PLAY', 'color:#11ffa4;border: 1px #11ffa4 solid;border-radius:4px;padding:0 4px')
         if (this.Points.length == 0) return
         this.stopPlaying()
         this.nowPlaying++
@@ -134,7 +142,6 @@ class Timer {
     }
 
     stopPlaying() {
-        console.log('stop')
         if ($($(`#time-list`).children()[0]).hasClass('mdui-list-item-active'))
             $($(`#time-list`).children()[0]).remove()
         $(`#status`).text('NEXT')
