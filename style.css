@@ -189,5 +189,13 @@ i.loading {
 }
 .editor select {
   flex: 1;
-  margin: 0 16px;
+  padding-right: 0;
+  margin: 0 8px;
+}
+.editor .mdui-card-actions {
+  background-color: #ebebeb;
+}
+.editor .mdui-card-actions {
+  display: flex;
+  justify-content: center;
 }

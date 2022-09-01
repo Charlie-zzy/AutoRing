@@ -124,7 +124,7 @@ function toggleAuto(m) {
 toggleAuto(false)
 
 const selectText = `<select class="mdui-select">
-${songPreset.map(({ title }, id) => `<option value="${id}">${title}</option>`)}
+${songPreset.map(({ title }, id) => `<option value="${id}">${title}</option>`).join('')}
 </select>`
 for (const d in points) {
   $('#edit-list').append(`<li class="mdui-list-item"><div class="mdui-list-item-content"><input class="mdui-list-item-title" value="${d}" size="3" type="time"/>${selectText.replace(`value="${points[d] - 1}"`, `value="${points[d] - 1}" selected`)}<button class="mdui-btn mdui-btn-icon mdui-ripple mdui-btn-dense" onclick="handleDel(this)"><i class="mdui-icon material-icons">clear</i></button><button class="mdui-btn mdui-btn-icon mdui-ripple mdui-btn-dense" onclick="handleAdd(this)"><i class="mdui-icon material-icons">add</i></button></div></li>`)
