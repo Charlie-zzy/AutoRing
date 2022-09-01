@@ -66,7 +66,7 @@ async function loadBuffer() {
       .then((res) => res.arrayBuffer())
       .then((buf) => audioCtx.decodeAudioData(buf))
       .then((buf) => {
-        console.log(id, url);
+        console.log('%cloaded', 'color:lightgreen;border: 1px lightgreen solid;border-radius:4px;padding:0 4px', id, url)
         songBuf[id] = buf
         songPreset[id].text = '✓ ' + TtoMMSS(buf.duration)
         refreshSongPreset()
@@ -76,8 +76,8 @@ async function loadBuffer() {
 loadBuffer()
 
 function handleDelay(sec) {
-  if (mode)
-    timer.Points[0].time += sec * 1000
+  if (mode && timer.Points.length > 0)
+    timer.Points[0].time -= sec * 1000
 }
 
 function handleStop() {
@@ -130,7 +130,7 @@ for (const d in points) {
   $('#edit-list').append(`<li class="mdui-list-item"><div class="mdui-list-item-content"><input class="mdui-list-item-title" value="${d}" size="3" type="time"/>${selectText.replace(`value="${points[d] - 1}"`, `value="${points[d] - 1}" selected`)}<button class="mdui-btn mdui-btn-icon mdui-ripple mdui-btn-dense" onclick="handleDel(this)"><i class="mdui-icon material-icons">clear</i></button><button class="mdui-btn mdui-btn-icon mdui-ripple mdui-btn-dense" onclick="handleAdd(this)"><i class="mdui-icon material-icons">add</i></button></div></li>`)
 }
 function handleSave() {
-  data.set('points', JSON.parse(`{${[...$('#edit-list')[0].children].map(e => [...e.children[0].children].map(e => e.value)).filter(([e]) => e != "").map(e => `"${e[0]}":${e[1]}`)}}`))
+  data.set('points', JSON.parse(`{${[...$('#edit-list')[0].children].map(e => [...e.children[0].children].map(e => e.value)).filter(([e]) => e != "").map(e => `"${e[0]}":${1 + parseInt(e[1])}`)}}`))
   location.reload()
 }
 function handleReset() {
@@ -138,7 +138,6 @@ function handleReset() {
   location.reload()
 }
 function handleAdd(el) {
-  console.log($(el.parentNode.parentNode));
   $(el.parentNode.parentNode).after(`<li class="mdui-list-item"><div class="mdui-list-item-content"><input class="mdui-list-item-title" size="3" type="time"/>${selectText}<button class="mdui-btn mdui-btn-icon mdui-ripple mdui-btn-dense" onclick="handleDel(this)"><i class="mdui-icon material-icons">clear</i></button><button class="mdui-btn mdui-btn-icon mdui-ripple mdui-btn-dense" onclick="handleAdd(this)"><i class="mdui-icon material-icons">add</i></button></div></li>`)
 }
 function handleDel(el) {
