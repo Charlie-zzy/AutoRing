@@ -31,7 +31,18 @@
       </div>
     </div>
 
-    <div class="mdui-card" style="display: flex; flex-direction: column;">
+    <div class="mdui-card" style="display: flex; flex-direction: column">
+      <div class="mdui-card-content" style="display: flex; justify-content: center; padding-bottom: 0;">
+        <button class="mdui-btn" onclick="handleResetSong()" style="width: fit-content;">
+          <i class="mdui-icon material-icons mdui-icon-left">refresh</i>
+          重置
+        </button>
+        <button class="mdui-btn" onclick="songPreset = data.get('songPreset');songPreset.forEach(loadBuffer)"
+          style="width: fit-content;">
+          <i class="mdui-icon material-icons mdui-icon-left">autorenew</i>
+          重新加载音频
+        </button>
+      </div>
       <div class="mdui-card-actions audio-card"></div>
     </div>
 

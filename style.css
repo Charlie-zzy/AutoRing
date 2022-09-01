@@ -41,7 +41,6 @@ body {
 
 .audio-card {
   text-align: center;
-  cursor: pointer;
 }
 
 .audio-card > div {
@@ -62,6 +61,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  cursor: pointer;
 }
 
 .audio-card-item:hover {
@@ -198,4 +198,8 @@ i.loading {
 .editor .mdui-card-actions {
   display: flex;
   justify-content: center;
+}
+
+.mdui-textfield-error, .mdui-textfield-helper {
+  overflow: visible;
 }

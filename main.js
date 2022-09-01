@@ -15,26 +15,31 @@ songPreset = [
   { title: '晚自习', icon: 'looks_5', url: './music/5.mp3' },
   { title: '回寝', icon: 'looks_6', url: 'https://api.i-meto.com/meting/api?server=netease&type=url&id=5276818&auth=fcd3144dadb8d2951601c8dd7a424d5b335f528b' },
 
-  { title: 'Rick Roll', icon: 'directions_walk', url: 'https://api.i-meto.com/meting/api?server=netease&type=url&id=5221167&auth=99dfa3046c660a386a4aef99d8df2fabe78c065a' },
+  { title: '诈骗', icon: 'directions_walk', url: 'https://api.i-meto.com/meting/api?server=netease&type=url&id=5221167&auth=99dfa3046c660a386a4aef99d8df2fabe78c065a' },
   { title: '间操', icon: 'accessibility', url: 'https://api.i-meto.com/meting/api?server=netease&type=url&id=25813883&auth=a471cadbbb11712c8f2c819e894420b859432c28' },
-  { title: 'Astronomia', icon: 'accessible', url: 'https://api.i-meto.com/meting/api?server=netease&type=url&id=430114655&auth=93d801fa794ce9cbbe944a94a6c034fb212f254e' },
+  { title: '抬走', icon: 'accessible', url: 'https://api.i-meto.com/meting/api?server=netease&type=url&id=430114655&auth=93d801fa794ce9cbbe944a94a6c034fb212f254e' },
 ]
-refreshSongPreset()
+if (data.has('songPreset')) songPreset = data.get('songPreset')
+data.set('songPreset', songPreset)
+
+let Dialog = null
+const DIALOG_TEXT = `<div class="mdui-dialog" id="dialog"><div class="mdui-dialog-title">自定义音乐</div><div class="mdui-dialog-content"><div class="mdui-textfield"><label class="mdui-textfield-label">名称</label><input class="mdui-textfield-input" id="dialog-name" type="text" required /><div class="mdui-textfield-error">名称不能为空，不然你咋区分</div></div><div class="mdui-textfield"><label class="mdui-textfield-label">单曲ID或分享链接</label><input class="mdui-textfield-input" id="dialog-url" type="text" /><div class="mdui-textfield-error" id="dialog-url-error">无法解析</div><div class="mdui-textfield-helper">在网易云打开单曲，复制分享链接然后粘贴到这里</div></div></div><div class="mdui-dialog-actions"><button class="mdui-btn mdui-ripple" mdui-dialog-cancel>取消</button><button class="mdui-btn mdui-ripple" id="dialog-save" mdui-dialog-confirm>保存</button></div></div>`
+let editingIndex = null
 
 function refreshSongPreset() {
   $('.audio-card').empty()
   songPreset.forEach(({ title, icon, text }, id) => {
     if (id % 3 == 0) $('.audio-card').append(`<div id="audio-col-${id / 3}">`)
     const item = $(`
-                <div class="audio-card-item" id="item-${id}">
-                  <div class="title">${title}</div>
-                  ${text ? `<i class="mdui-icon material-icons">${icon}</i>`
+    <div class="audio-card-item" id="item-${id}">
+    <div class="title">${title}</div>
+    ${text ? `<i class="mdui-icon material-icons">${icon}</i>`
         : `<div class="half-circle-spinner">
-        <div class="circle circle-1"></div>
-        <div class="circle circle-2"></div>
-        </div>`}
-                  <div class="filename">${text ?? '加载中~'}</div>
-                </div>`)
+    <div class="circle circle-1"></div>
+    <div class="circle circle-2"></div>
+    </div>`}
+    <div class="filename">${text ?? '加载中~'}</div>
+    </div>`)
     item.on('click', () => {
       if (!songBuf[id]) return
       if (!mode) {
@@ -59,24 +64,76 @@ function refreshSongPreset() {
         }
       }
     })
+    item.on('contextmenu', (evt) => {
+      evt.preventDefault()
+      Dialog = new mdui.Dialog(DIALOG_TEXT, {
+        closeOnConfirm: false, destroyOnClosed: true, modal: true
+      })
+      const $name = $('#dialog-name'), $url = $('#dialog-url'), $error = $('#dialog-url-error')
+      $('#dialog-save').on('click', async () => {
+        const title = $name.val(), url = $url.val()
+        let result = null
+        console.log(url.match(/\D*/), url);
+        if (url.match(/(?<=song\??id=)\d+/) != null) //  匹配成功
+          result = url.match(/(?<=song\??id=)\d+/)[0]
+        else if (url.match(/[^\d]/) != null) // 含有未知字符
+          $error.text('是无法理解的内容呢qwq')
+        else if (url != "") // 纯数字，推测为 ID
+          result = parseInt(url)
+        else // 根本没输
+          $error.text('请输入URL...')
+
+        if (!result) {
+          $error.parent().addClass('mdui-textfield-invalid')
+        } else {
+          $error.parent().removeClass('mdui-textfield-invalid')
+          $('#dialog-save').text('解析链接中')
+          $('.mdui-dialog-actions button').attr('disabled', true)
+          const res = await fetch('https://api.i-meto.com/meting/api?type=song&id=' + result).then(data => data.json())
+          if (res.length == 0) {
+            $('#dialog-save').text('解析失败了...')
+            setTimeout(() => {
+              $('.mdui-dialog-actions button').removeAttr('disabled')
+              $('#dialog-save').text('保存')
+            }, 1000)
+            return
+          }
+          const { url } = res[0]
+          songPreset[editingIndex].url = url
+          songPreset[editingIndex].title = title
+          data.set('songPreset', songPreset)
+          loadBuffer(songPreset[editingIndex], editingIndex)
+          $('#dialog-save').text('解析成功喵~')
+          setTimeout(() => {
+            Dialog.close()
+          }, 1000)
+        }
+      })
+      Dialog.open()
+      $name.val(songPreset[id].title)
+      if (songPreset[id].url.match(/id=\d+/))
+        $url.val(songPreset[id].url.match(/id=\d+/)[0].split('=')[1])
+      editingIndex = id
+      $('#dialog').mutation()
+      Dialog.handleUpdate()
+    })
     $(`#audio-col-${~~(id / 3)}`).append(item)
   })
 }
+refreshSongPreset()
 
-async function loadBuffer() {
-  songPreset.forEach(({ url }, id) =>
-    fetch(url)
-      .then((res) => res.arrayBuffer())
-      .then((buf) => audioCtx.decodeAudioData(buf))
-      .then((buf) => {
-        console.log('%cloaded', 'color:lightgreen;border: 1px lightgreen solid;border-radius:4px;padding:0 4px', id, url)
-        songBuf[id] = buf
-        songPreset[id].text = '✓ ' + TtoMMSS(buf.duration)
-        refreshSongPreset()
-      })
-  )
+async function loadBuffer({ url }, id) {
+  await fetch(url)
+    .then((res) => res.arrayBuffer())
+    .then((buf) => audioCtx.decodeAudioData(buf))
+    .then((buf) => {
+      console.log('%cloaded', 'color:lightgreen;border: 1px lightgreen solid;border-radius:4px;padding:0 4px', id, url)
+      songBuf[id] = buf
+      songPreset[id].text = '✓ ' + TtoMMSS(buf.duration)
+      refreshSongPreset()
+    })
 }
-loadBuffer()
+songPreset.forEach(loadBuffer)
 
 function handleDelay(sec) {
   if (mode && timer.Points.length > 0)
@@ -147,4 +204,9 @@ function handleAdd(el) {
 }
 function handleDel(el) {
   el.parentNode.parentNode.remove()
+}
+
+function handleResetSong() {
+  data.del('songPreset')
+  location.reload()
 }
