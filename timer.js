@@ -104,20 +104,23 @@ class Timer {
 
         this.startUpdate = () => {
             requestAnimationFrame(this.startUpdate)
-            if (this.Points.length == 0) $('#countdown').text('--:--')
-            else {
-                let timeleft = (this.Points[0].time - Date.now()) / 1000
-                if (timeleft <= 0) {
-                    if (mode) {
-                        this.startPlaying()
-                    } else {
-                        this.nowPlaying++
-                        this.Points.splice(0, 1)
-                        $($(`#time-list`).children()[0]).remove()
-                    }
+            if (mode) {
+                if (this.Points.length == 0) $('#countdown').text('--:--')
+                else {
+                    let timeleft = (this.Points[0]?.time - Date.now()) / 1000
+                    if (timeleft <= 0) this.startPlaying()
+                    this.Timeleft = this.Timeleft * (1 - .1) + timeleft * .1
+                    $('#countdown').text(TtoMMSS(Math.max(this.Timeleft + 1, 0)))
                 }
-                this.Timeleft = this.Timeleft * (1 - .1) + timeleft * .1
-                $('#countdown').text(TtoMMSS(Math.max(this.Timeleft + 1, 0)))
+            } else {
+                if (this.Points.length != 0 && this.Points[0]?.time <= Date.now()) {
+                    this.nowPlaying++
+                    this.Points.splice(0, 1)
+                    $($(`#time-list`).children()[0]).remove()
+                }
+                if (BufferNode && BufferNode.state == 'playing')
+                    $('#countdown').text(TtoMMSS((Date.now() - BufferNode.startTime) / 1000))
+                else $('#countdown').text('--:--')
             }
         }
         this.Timeleft = 0
@@ -142,7 +145,7 @@ class Timer {
     }
 
     stopPlaying() {
-        if ($($(`#time-list`).children()[0]).hasClass('mdui-list-item-active'))
+        if ($($(`#time-list`).children()[0])?.hasClass('mdui-list-item-active'))
             $($(`#time-list`).children()[0]).remove()
         $(`#status`).text('NEXT')
         $(`#countdown`).removeClass('mdui-color-red')

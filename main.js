@@ -38,13 +38,16 @@ function refreshSongPreset() {
     item.on('click', () => {
       if (!songBuf[id]) return
       if (!mode) {
-        if (BufferNode && BufferNode.state != 'closed') {
+        if (BufferNode && BufferNode.state == 'playing') {
+          BufferNode.onended = null
           BufferNode.stop()
           BufferNode.state = 'closed'
         }
         BufferNode = audioCtx.createBufferSource()
         BufferNode.buffer = songBuf[id]
         BufferNode.connect(GainNode)
+        BufferNode.state = 'playing'
+        BufferNode.startTime = Date.now()
         BufferNode.start(0)
         $(`#status`).text('PLAY')
         $(`#countdown`).addClass('mdui-color-red')
@@ -86,7 +89,7 @@ function handleStop() {
     $($(`#time-list`).children()[0]).remove()
   }
   $(`#status`).text('NEXT')
-  if (BufferNode && BufferNode.state != 'closed') {
+  if (BufferNode && BufferNode.state == 'playing') {
     BufferNode.stop()
     BufferNode.state = 'closed'
   }
@@ -102,13 +105,14 @@ function toggleMute() {
 const timer = new Timer()
 
 timer.setMutation((id, d) => {
-  if (BufferNode && BufferNode.state != 'closed') {
+  if (BufferNode && BufferNode.state == 'playing') {
     BufferNode.stop()
     BufferNode.state = 'closed'
   }
   BufferNode = audioCtx.createBufferSource()
   BufferNode.buffer = songBuf[id]
   BufferNode.connect(GainNode)
+  BufferNode.state = 'playing'
   BufferNode.start(0)
   BufferNode.onended = () => {
     if (d == timer.nowPlaying) timer.stopPlaying()
@@ -117,6 +121,7 @@ timer.setMutation((id, d) => {
 
 function toggleAuto(m) {
   if (mode == m) return
+  handleStop()
   $('.auto').toggleClass('mdui-color-indigo')
   $('.manual').toggleClass('mdui-color-indigo')
   $('#skip').text((mode = m) ? '跳过' : '停止')
