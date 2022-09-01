@@ -1,6 +1,6 @@
 class Stroage {
     get(key) {
-        return JSON.parse(localStorage.getItem(key))
+        return JSON.parse(localStorage.getItem(key) ?? {})
     }
 
     set(key, value) {
@@ -10,6 +10,10 @@ class Stroage {
     has(key) {
         const value = localStorage.getItem(key)
         return value !== null && value !== 'undefined'
+    }
+
+    del(key) {
+        localStorage.removeItem(key)
     }
 }
 

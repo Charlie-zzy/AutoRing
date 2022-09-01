@@ -67,24 +67,28 @@ const Points = {
     '20:18': 3,
     '20:20': 1,
     '21:20': 5, // 卡农
+    '21:20': 5, // 卡农
 }
+
+let points = Points
+if (data.has('points')) points = data.get('points')
 
 class Timer {
     constructor() {
         this.today = ~~(Date.now() / 3600000) * 3600000
         this.nowPlaying = 0
         this.Points = []
-        for (const d in Points) {
+        for (const d in points) {
             const time = this.HHMMtoT(d),
-                id = Points[d]
+                id = points[d]
             this.Points.push({ time, id, d })
         }
         this.Points.sort((a, b) => a.time - b.time)
         this.Points = this.Points.filter(({ time }) => time >= Date.now())
 
-        $('#list').empty()
+        $('#time-list').empty()
         this.Points.forEach(({ time, id, d }, i) => {
-            $('#list').append(`
+            $('#time-list').append(`
             <li class="mdui-list-item mdui-ripple">
                 <i class="mdui-list-item-avatar mdui-icon material-icons">
                 ${songPreset[id - 1].icon}</i>
@@ -104,7 +108,7 @@ class Timer {
             else {
                 let timeleft = (this.Points[0].time - Date.now()) / 1000
                 if (timeleft <= 0) this.startPlaying()
-                this.Timeleft = this.Timeleft * 0.92 + timeleft * 0.08
+                this.Timeleft = this.Timeleft * (1 - .1) + timeleft * .1
                 $('#countdown').text(TtoMMSS(Math.max(this.Timeleft + 1, 0)))
             }
         }
@@ -123,7 +127,7 @@ class Timer {
         this.nowPlaying++
         this.f(this.Points[0].id - 1, this.nowPlaying)
         this.Points.splice(0, 1)
-        $($(`#list`).children()[0]).addClass('mdui-list-item-active')
+        $($(`#time-list`).children()[0]).addClass('mdui-list-item-active')
         $(`#status`).text('PLAY')
         $(`#countdown`).addClass('mdui-color-red')
         $(`#countdown`).removeClass('mdui-color-green')
@@ -131,8 +135,8 @@ class Timer {
 
     stopPlaying() {
         console.log('stop')
-        if ($($(`#list`).children()[0]).hasClass('mdui-list-item-active'))
-            $($(`#list`).children()[0]).remove()
+        if ($($(`#time-list`).children()[0]).hasClass('mdui-list-item-active'))
+            $($(`#time-list`).children()[0]).remove()
         $(`#status`).text('NEXT')
         $(`#countdown`).removeClass('mdui-color-red')
         $(`#countdown`).addClass('mdui-color-green')

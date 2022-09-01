@@ -14,39 +14,46 @@
   <div class="mdui-card list-box">
     <div class="countdown-text mdui-text-color-white" id="status">NEXT</div>
     <div class="mdui-color-green mdui-text-color-white" id="countdown">00:00</div>
-    <div class="mdui-list" id="list"></div>
+    <div class="mdui-list" id="time-list"></div>
   </div>
 
   <div class="mdui-container">
 
     <div class="mdui-card">
       <div class="mdui-card-actions">
-        <button class="mdui-btn mdui-ripple-cyan" onclick="handleDelay(10)">拖堂 10s</button>
-        <button class="mdui-btn mdui-ripple" onclick="handleDelay(60)">拖堂 1min</button>
+        <button class="mdui-btn mdui-ripple-cyan" onclick="handleDelay(10)">拖堂一小会</button>
         <button class="mdui-btn mdui-color-red-400" onclick="handleStop()">
           <i class="mdui-icon material-icons mdui-icon-left">block</i>
-          <div id="skip">跳过</div>
+          <div id="skip"></div>
         </button>
-        <button class="mdui-btn mdui-color-indigo" onclick="toggleMute()">
+        <button class="mdui-btn" onclick="toggleMute()">
           <i class="mdui-icon material-icons mdui-icon-left" id="mute-icon">volume_up</i>静音</button>
       </div>
     </div>
 
     <div class="mdui-card" style="display: flex; flex-direction: column;">
-      <label class="mdui-checkbox mdui-center" style="font-weight: 600; margin-top: 10px;" onchange="toggleNew()">
-        <input type="checkbox" id="new" disabled/>
-        <i class="mdui-checkbox-icon"></i>
-        启用自制铃声
-      </label>
       <div class="mdui-card-actions audio-card"></div>
     </div>
 
     <div class="mdui-card auto-control">
-      <button class="mdui-btn mdui-ripple auto" onclick="toggleAuto(true)">自动</button>
+      <button class="mdui-btn mdui-ripple auto mdui-color-indigo" onclick="toggleAuto(true)">自动</button>
       <button class="mdui-btn mdui-ripple manual" onclick="toggleAuto(false)">手动</button>
     </div>
   </div>
 
+  <div class="mdui-card editor">
+    <div class="mdui-list mdui-list-dense" id="edit-list"></div>
+    <div class="mdui-card-actions">
+      <button class="mdui-btn mdui-color-indigo" onclick="handleSave()">
+        <i class="mdui-icon material-icons mdui-icon-left">save</i>
+        保存
+      </button>
+      <button class="mdui-btn mdui-color-red" onclick="handleReset()">
+        <i class="mdui-icon material-icons mdui-icon-left">refresh</i>
+        重置
+      </button>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/mdui@1.0.2/dist/js/mdui.min.js"></script>
   <script>
