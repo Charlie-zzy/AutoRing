@@ -200,6 +200,13 @@ i.loading {
   justify-content: center;
 }
 
-.mdui-textfield-error, .mdui-textfield-helper {
+.mdui-textfield-error,
+.mdui-textfield-helper {
   overflow: visible;
+}
+
+.hint {
+  text-align: center;
+  color: #4059737a;
+  padding-bottom: 16px;
 }
