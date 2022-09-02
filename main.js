@@ -126,15 +126,16 @@ songPreset.forEach(({ title, icon, text }, id) => {
 
 async function fetchWithProcess(url, fn) {
   const { body: data, headers } = await fetch(url)
-  const Totallength = +headers.get('Content-Length'), reader = data.getReader()
+  const totalLength = +headers.get('Content-Length')
+  const reader = data.getReader()
 
-  let receivedLength = 0, result = new Uint8Array(Totallength)
+  let receivedLength = 0, result = new Uint8Array(totalLength)
   while (true) {
     const { done, value } = await reader.read()
     if (done) break
     result.set(value, receivedLength)
     receivedLength += value.length
-    fn(receivedLength / Totallength)
+    fn(receivedLength / totalLength)
   }
 
   return result.buffer
@@ -187,7 +188,7 @@ songPreset.forEach(loadBuffer)
 
 function handleDelay(sec) {
   if (mode && timer.Points.length > 0)
-    timer.Points[0].time -= sec * 1000
+    timer.Points[0].time += sec * 1000
 }
 
 function handleStop() {
