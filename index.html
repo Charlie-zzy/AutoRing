@@ -32,15 +32,14 @@
     </div>
 
     <div class="mdui-card" style="display: flex; flex-direction: column">
-      <div class="mdui-card-content" style="display: flex; justify-content: center; padding-bottom: 0;">
-        <button class="mdui-btn" onclick="handleResetSong()" style="width: fit-content;">
+      <div class="mdui-card-content" style="display: flex; justify-content: center; padding-bottom: 0">
+        <button class="mdui-btn" onclick="handleResetSong()">
           <i class="mdui-icon material-icons mdui-icon-left">refresh</i>
-          重置
+          清除缓存并重置
         </button>
-        <button class="mdui-btn" onclick="songPreset = data.get('songPreset');songPreset.forEach(loadBuffer)"
-          style="width: fit-content;">
-          <i class="mdui-icon material-icons mdui-icon-left">autorenew</i>
-          重新加载音频
+        <button class="mdui-btn" onclick="songPreset.forEach(loadBuffer)">
+          <i class="mdui-icon material-icons mdui-icon-left">file_download</i>
+          全部下载
         </button>
       </div>
       <div class="mdui-card-actions audio-card"></div>
@@ -79,6 +78,7 @@
       songPreset,
       songBuf = Array(6)
   </script>
+  <script src="localforage.min.js"></script>
   <script src="stroage.js"></script>
   <script src="timer.js"></script>
   <script src="main.js"></script>
