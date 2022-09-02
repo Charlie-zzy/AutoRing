@@ -37,7 +37,7 @@
           <i class="mdui-icon material-icons mdui-icon-left">refresh</i>
           清除缓存并重置
         </button>
-        <button class="mdui-btn" onclick="songPreset.forEach(loadBuffer)">
+        <button class="mdui-btn" onclick="handleDownloadAll()">
           <i class="mdui-icon material-icons mdui-icon-left">file_download</i>
           全部下载
         </button>
@@ -74,9 +74,7 @@
       return `${m < 10 ? 0 : ''}${m}:${s < 10 ? 0 : ''}${s}`
     }
 
-    let mode,
-      songPreset,
-      songBuf = Array(6)
+    let mode, songPreset, songBuf = []
   </script>
   <script src="localforage.min.js"></script>
   <script src="stroage.js"></script>

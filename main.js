@@ -259,3 +259,6 @@ async function handleResetSong() {
   await localforage.dropInstance()
   location.reload()
 }
+async function handleDownloadAll() {
+  songPreset.filter((_, id) => songBuf[id]).forEach(loadBuffer)
+}
