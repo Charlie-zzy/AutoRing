@@ -149,6 +149,9 @@ async function loadBuffer({ url }, id) {
   const cache = await localforage.getItem('cache-' + id)
   if (!cache) {
     el.text('未找到缓存')
+    setTimeout(() => {
+      if (el.text() == '未找到缓存') el.text('准备下载...')
+    }, 1000)
     await fetchWithProcess(url, (precent) => {
       el.text('下载中 ' + (precent * 100).toFixed() + '%')
     })
