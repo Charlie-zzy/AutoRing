@@ -132,7 +132,7 @@ class Timer {
     }
 
     startPlaying() {
-        console.log('%cAUTO PLAY', 'color:#11ffa4;border: 1px #11ffa4 solid;border-radius:4px;padding:0 4px')
+        console.log('%cplay', 'color:#11ffa4;border: 1px #11ffa4 solid;border-radius:4px;padding:0 4px')
         if (this.Points.length == 0) return
         this.stopPlaying()
         this.nowPlaying++
