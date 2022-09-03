@@ -75,48 +75,51 @@ songPreset.forEach(({ title, icon, text }, id) => {
     })
     $('#dialog-save').on('click', async () => {
       const title = $name.val(), url = $url.val()
-      let result = null
-      if (url.match(/(?<=song\??id=)\d+/) != null) //  匹配成功
-        result = url.match(/(?<=song\??id=)\d+/)[0]
-      else if (url.match(/[^\d]/) != null) // 含有未知字符
-        $error.text('是无法理解的内容呢qwq')
-      else if (url != "") // 纯数字，推测为 ID
-        result = parseInt(url)
-      else // 根本没输
-        $error.text('请输入URL...')
+      if (url != prevURL) {
+        let result = null
+        if (url.match(/(?<=song\??id=)\d+/) != null) //  匹配成功
+          result = url.match(/(?<=song\??id=)\d+/)[0]
+        else if (url.match(/[^\d]/) != null) // 含有未知字符
+          $error.text('是无法理解的内容呢qwq')
+        else if (url != "") // 纯数字，推测为 ID
+          result = parseInt(url)
+        else // 根本没输
+          $error.text('请输入URL...')
 
-      if (!result) {
-        $error.parent().addClass('mdui-textfield-invalid')
-      } else {
-        $error.parent().removeClass('mdui-textfield-invalid')
-        $('#dialog-save').text('识别中')
-        $('.mdui-dialog-actions button').attr('disabled', true)
-        const res = await fetch('https://api.i-meto.com/meting/api?type=song&id=' + result).then(data => data.json())
-        if (res.length == 0) {
-          $('#dialog-save').text('识别失败了qwq')
+        if (!result) {
+          $error.parent().addClass('mdui-textfield-invalid')
+        } else {
+          $error.parent().removeClass('mdui-textfield-invalid')
+          $('#dialog-save').text('识别中')
+          $('.mdui-dialog-actions button').attr('disabled', true)
+          const res = await fetch('https://api.i-meto.com/meting/api?type=song&id=' + result).then(data => data.json())
+          if (res.length == 0) {
+            $('#dialog-save').text('识别失败了qwq')
+            setTimeout(() => {
+              $('.mdui-dialog-actions button').removeAttr('disabled')
+              $('#dialog-save').text('保存')
+            }, 1000)
+            return
+          }
+          const { url } = res[0]
+          songPreset[id].url = url
+          await localforage.removeItem('cache-' + id)
+          loadBuffer(songPreset[id], id)
+          $('#dialog-save').text('解析成功喵~')
           setTimeout(() => {
-            $('.mdui-dialog-actions button').removeAttr('disabled')
-            $('#dialog-save').text('保存')
-          }, 1000)
-          return
+            Dialog.close()
+          }, 600)
         }
-        const { url } = res[0]
-        songPreset[id].url = url
-        songPreset[id].title = title
-        $($('#item-' + id).children()[0]).text(title)
-        data.set('songPreset', songPreset)
-        await localforage.removeItem('cache-' + id)
-        loadBuffer(songPreset[id], id)
-        $('#dialog-save').text('解析成功喵~')
-        setTimeout(() => {
-          Dialog.close()
-        }, 600)
-      }
+      } else Dialog.close()
+      songPreset[id].title = title
+      $($('#item-' + id).children()[0]).text(title)
+      data.set('songPreset', songPreset)
     })
     Dialog.open()
     $name.val(songPreset[id].title)
+    let prevURL = ''
     if (songPreset[id].url.match(/id=\d+/))
-      $url.val(songPreset[id].url.match(/id=\d+/)[0].split('=')[1])
+      prevURL = $url.val(songPreset[id].url.match(/id=\d+/)[0].split('=')[1]).val()
     $('#dialog').mutation()
     Dialog.handleUpdate()
   })
