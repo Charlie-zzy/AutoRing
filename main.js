@@ -24,7 +24,6 @@ data.set('songPreset', songPreset)
 
 let Dialog = null
 const DIALOG_TEXT = `<div class="mdui-dialog" id="dialog"><div class="mdui-dialog-title">自定义音乐</div><div class="mdui-dialog-content"><div class="mdui-textfield"><label class="mdui-textfield-label">名称</label><input class="mdui-textfield-input" id="dialog-name" type="text" required /><div class="mdui-textfield-error">名称不能为空，不然你咋区分</div></div><div class="mdui-textfield"><label class="mdui-textfield-label">单曲ID或分享链接</label><input class="mdui-textfield-input" id="dialog-url" type="text" /><div class="mdui-textfield-error" id="dialog-url-error">无法解析</div><div class="mdui-textfield-helper">在网易云打开单曲，复制分享链接然后粘贴到这里</div></div></div><div class="mdui-dialog-actions"><button class="mdui-btn mdui-ripple" mdui-dialog-cancel>取消</button><button class="mdui-btn mdui-ripple" id="dialog-save" mdui-dialog-confirm>保存</button></div></div>`
-let editingIndex = null
 
 songPreset.forEach(({ title, icon, text }, id) => {
   if (id % 3 == 0) $('.audio-card').append(`<div id="audio-col-${id / 3}">`)
@@ -102,11 +101,12 @@ songPreset.forEach(({ title, icon, text }, id) => {
           return
         }
         const { url } = res[0]
-        songPreset[editingIndex].url = url
-        songPreset[editingIndex].title = title
+        songPreset[id].url = url
+        songPreset[id].title = title
+        $($('#item-' + id).children()[0]).text(title)
         data.set('songPreset', songPreset)
         await localforage.removeItem('cache-' + id)
-        loadBuffer(songPreset[editingIndex], editingIndex)
+        loadBuffer(songPreset[id], id)
         $('#dialog-save').text('解析成功喵~')
         setTimeout(() => {
           Dialog.close()
@@ -117,7 +117,6 @@ songPreset.forEach(({ title, icon, text }, id) => {
     $name.val(songPreset[id].title)
     if (songPreset[id].url.match(/id=\d+/))
       $url.val(songPreset[id].url.match(/id=\d+/)[0].split('=')[1])
-    editingIndex = id
     $('#dialog').mutation()
     Dialog.handleUpdate()
   })
