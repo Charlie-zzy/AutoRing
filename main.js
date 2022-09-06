@@ -173,23 +173,18 @@ async function loadBuffer({ url }, id) {
     await fetchWithProcess(url, (precent) => {
       el.text('下载中 ' + (precent * 100).toFixed() + '%')
     })
-      .catch(() => el.text('下载失败'))
       .then(async (buf) => {
         el.text('缓存中...')
-        console.log('%c2 save  ', 'color:#a3cc00;border: 1px #a3cc00 solid;border-radius:4px;padding:0 4px', 'cache-' + id, buf.byteLength)
         await localforage.setItem('cache-' + id, buf.slice())
-        el.text('解码中...')
-        return audioCtx.decodeAudioData(buf)
-      })
-      .catch(() => el.text('解码失败'))
-      .then((buf) => {
-        console.log('%c3 loaded', 'color:lightgreen;border: 1px lightgreen solid;border-radius:4px;padding:0 4px', id, url)
+        console.log('%c2 saved ', 'color:#a3cc00;border: 1px #a3cc00 solid;border-radius:4px;padding:0 4px', 'cache-' + id, buf.byteLength)
+        el.text('解析中...')
         songBuf[id] = null
-        songBuf[id] = buf
+        songBuf[id] = await audioCtx.decodeAudioData(buf).catch(() => el.text('解析失败'))
+        console.log('%c3 loaded', 'color:lightgreen;border: 1px lightgreen solid;border-radius:4px;padding:0 4px', id, url)
         $($('#item-' + id).children()[1]).text(songPreset[id].icon)
         el.text('✓ 成功 ')
-        setTimeout(() => el.text('✓ ' + TtoMMSS(buf.duration)), 800)
-      })
+        setTimeout(() => el.text('✓ ' + TtoMMSS(songBuf[id].duration)), 800)
+      }, () => el.text('下载失败'))
   } else {
     el.text('解析中...')
     await audioCtx.decodeAudioData(cache)
@@ -200,13 +195,13 @@ async function loadBuffer({ url }, id) {
         $($('#item-' + id).children()[1]).text(songPreset[id].icon)
         el.text('✓ 成功 ')
         setTimeout(() => el.text('✓ ' + TtoMMSS(buf.duration)), 800)
-      })
+      }, () => el.text('解析失败'))
   }
 }
 songPreset.forEach(loadBuffer)
 
 function handleDelay(sec) {
-  if (mode && timer.Points.length > 0) timer.Points[0].time += sec * 10000
+  if (mode && timer.Points.length > 0) timer.Points[0].time += sec * 1000
 }
 
 function handleStop() {
@@ -226,20 +221,21 @@ function toggleMute() {
 }
 
 let selectText
+const timer = new Timer()
+timer.setMutation((id, d) => {
+  stopPlaying()
+  BufferNode = null
+  BufferNode = audioCtx.createBufferSource()
+  BufferNode.buffer = songBuf[id]
+  BufferNode.connect(GainNode)
+  BufferNode.state = 'playing'
+  BufferNode.start(0)
+  BufferNode.onended = () => {
+    if (d == timer.nowPlaying) timer.stopPlaying()
+  }
+})
 function initTimer() {
-  timer = new Timer()
-  timer.setMutation((id, d) => {
-    stopPlaying()
-    BufferNode = null
-    BufferNode = audioCtx.createBufferSource()
-    BufferNode.buffer = songBuf[id]
-    BufferNode.connect(GainNode)
-    BufferNode.state = 'playing'
-    BufferNode.start(0)
-    BufferNode.onended = () => {
-      if (d == timer.nowPlaying) timer.stopPlaying()
-    }
-  })
+  timer.reset()
 
   selectText = `<select class="mdui-select">
 ${songPreset.map(({ title }, id) => `<option value="${id}">${title}</option>`).join('')}
@@ -253,7 +249,7 @@ initTimer()
 
 function toggleAuto(m) {
   if (mode == m) return
-  handleStop()
+  stopPlaying()
   $('.auto').toggleClass('mdui-color-indigo')
   $('.manual').toggleClass('mdui-color-indigo')
   $('#skip').text((mode = m) ? '跳过' : '停止')

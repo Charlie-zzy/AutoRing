@@ -73,35 +73,7 @@ const Points = {
 
 class Timer {
     constructor() {
-        this.points = Points
-        if (data.has('points')) this.points = data.get('points')
-        this.today = ~~(Date.now() / 3600000) * 3600000
-        this.nowPlaying = 0
-        this.Points = []
-        for (const d in this.points) {
-            const time = this.HHMMtoT(d),
-                id = this.points[d]
-            this.Points.push({ time, id, d })
-        }
-        this.Points.sort((a, b) => a.time - b.time)
-        this.Points = this.Points.filter(({ time }) => time >= Date.now())
-
-        $('#time-list').empty()
-        this.Points.forEach(({ time, id, d }, i) => {
-            $('#time-list').append(`
-            <li class="mdui-list-item mdui-ripple">
-                <i class="mdui-list-item-avatar mdui-icon material-icons">
-                ${songPreset[id - 1].icon}</i>
-                <div class="mdui-list-item-content">
-                    <div class="mdui-list-item-title">
-                        ${songPreset[id - 1].title}
-                    </div>
-                    <div class="mdui-list-item-text">${d}</div>
-                </div>
-            </li>
-            `)
-        })
-
+        this.reset()
         this.startUpdate = () => {
             requestAnimationFrame(this.startUpdate)
             if (mode) {
@@ -157,5 +129,36 @@ class Timer {
         const ans = new Date()
         ans.setHours(h, m, t ?? 0, 0)
         return +ans
+    }
+
+    reset() {
+        this.points = Points
+        if (data.has('points')) this.points = data.get('points')
+        this.today = ~~(Date.now() / 3600000) * 3600000
+        this.nowPlaying = 0
+        this.Points = []
+        for (const d in this.points) {
+            const time = this.HHMMtoT(d),
+                id = this.points[d]
+            this.Points.push({ time, id, d })
+        }
+        this.Points.sort((a, b) => a.time - b.time)
+        this.Points = this.Points.filter(({ time }) => time >= Date.now())
+
+        $('#time-list').empty()
+        this.Points.forEach(({ id, d }) => {
+            $('#time-list').append(`
+            <li class="mdui-list-item mdui-ripple">
+                <i class="mdui-list-item-avatar mdui-icon material-icons">
+                ${songPreset[id - 1].icon}</i>
+                <div class="mdui-list-item-content">
+                    <div class="mdui-list-item-title">
+                        ${songPreset[id - 1].title}
+                    </div>
+                    <div class="mdui-list-item-text">${d}</div>
+                </div>
+            </li>
+            `)
+        })
     }
 }
