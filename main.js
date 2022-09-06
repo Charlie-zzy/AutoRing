@@ -45,6 +45,7 @@ songPreset.forEach(({ title }, id) => {
     <div class="filename">点击加载</div>
     </div>`)
   item.on('click', () => {
+    if (songPreset[id].loading) return
     if (!songBuf[id]) {
       loadBuffer(songPreset[id], id)
       return
@@ -158,10 +159,11 @@ async function fetchWithProcess(url, fn) {
   return result.buffer
 }
 async function loadBuffer({ url }, id) {
+  if (songPreset[id].loading) return
+  songPreset[id].loading = true
   const el = $($('#item-' + id).children()[2])
   console.log('%c1 onload', 'color:yellow;border: 1px yellow solid;border-radius:4px;padding:0 4px', id)
   $('#item-' + id).children()[1].innerHTML = `<div class="half-circle-spinner"><div class="circle circle-1"></div><div class="circle circle-2"></div></div>`
-  songPreset[id].loading = true
 
   el.text('加载缓存...')
   const cache = await localforage.getItem('cache-' + id)
@@ -185,6 +187,7 @@ async function loadBuffer({ url }, id) {
         el.text('✓ 成功 ')
         setTimeout(() => el.text('✓ ' + TtoMMSS(songBuf[id].duration)), 800)
       }, () => el.text('下载失败'))
+      .finally(() => songPreset[id].loading = false)
   } else {
     el.text('解析中...')
     await audioCtx.decodeAudioData(cache)
@@ -196,6 +199,7 @@ async function loadBuffer({ url }, id) {
         el.text('✓ 成功 ')
         setTimeout(() => el.text('✓ ' + TtoMMSS(buf.duration)), 800)
       }, () => el.text('解析失败'))
+      .finally(() => songPreset[id].loading = false)
   }
 }
 songPreset.forEach(loadBuffer)
@@ -267,7 +271,7 @@ async function handleResetSong() {
   location.reload()
 }
 async function handleDownloadAll() {
-  songPreset.filter((_, id) => songBuf[id]).forEach(loadBuffer)
+  songPreset.filter((_, id) => !songPreset[id].loading).forEach(loadBuffer)
 }
 
 function handleEdit() {
