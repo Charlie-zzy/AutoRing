@@ -206,7 +206,7 @@ async function loadBuffer({ url }, id) {
 songPreset.forEach(loadBuffer)
 
 function handleDelay(sec) {
-  if (mode && timer.Points.length > 0) timer.Points[0].time -= sec * 10000
+  if (mode && timer.Points.length > 0) timer.Points[0].time += sec * 10000
 }
 
 function handleStop() {
