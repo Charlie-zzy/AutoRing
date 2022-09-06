@@ -40,7 +40,7 @@ const Points = {
 
     // 7
     '14:43': 3,
-    '15:45': 1,
+    '14:45': 1,
     '15:25': 2,
 
     // 8
@@ -70,17 +70,17 @@ const Points = {
     '21:20': 5, // 卡农
 }
 
-let points = Points
-if (data.has('points')) points = data.get('points')
 
 class Timer {
     constructor() {
+        this.points = Points
+        if (data.has('points')) this.points = data.get('points')
         this.today = ~~(Date.now() / 3600000) * 3600000
         this.nowPlaying = 0
         this.Points = []
-        for (const d in points) {
+        for (const d in this.points) {
             const time = this.HHMMtoT(d),
-                id = points[d]
+                id = this.points[d]
             this.Points.push({ time, id, d })
         }
         this.Points.sort((a, b) => a.time - b.time)

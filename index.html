@@ -15,13 +15,19 @@
     <div class="countdown-text mdui-text-color-white" id="status">NEXT</div>
     <div class="mdui-color-green mdui-text-color-white" id="countdown">00:00</div>
     <div class="mdui-list" id="time-list"></div>
+    <div class="mdui-card-actions mdui-ripple" onclick="handleEdit()">
+      <button class="mdui-btn">
+        <i class="mdui-icon material-icons mdui-icon-left">edit</i>
+        修改
+      </button>
+    </div>
   </div>
 
   <div class="mdui-container">
 
     <div class="mdui-card">
       <div class="mdui-card-actions">
-        <button class="mdui-btn mdui-ripple-cyan" onclick="handleDelay(10)">拖堂一小会</button>
+        <button class="mdui-btn mdui-ripple" onclick="handleDelay(10)">+10s</button>
         <button class="mdui-btn mdui-color-red-400" onclick="handleStop()">
           <i class="mdui-icon material-icons mdui-icon-left">block</i>
           <div id="skip"></div>
@@ -29,19 +35,19 @@
         <button class="mdui-btn" onclick="toggleMute()">
           <i class="mdui-icon material-icons mdui-icon-left" id="mute-icon">volume_up</i>静音</button>
       </div>
-    </div>
-
-    <div class="mdui-card" style="display: flex; flex-direction: column">
-      <div class="mdui-card-content" style="display: flex; justify-content: center; padding-bottom: 0">
+      <div class="mdui-card-actions" style="display: flex; justify-content: center; padding-top: 0">
         <button class="mdui-btn" onclick="handleResetSong()">
           <i class="mdui-icon material-icons mdui-icon-left">refresh</i>
-          清除缓存并重置
+          全部重置
         </button>
         <button class="mdui-btn" onclick="handleDownloadAll()">
           <i class="mdui-icon material-icons mdui-icon-left">file_download</i>
           全部下载
         </button>
       </div>
+    </div>
+
+    <div class="mdui-card" style="display: flex; flex-direction: column">
       <div class="mdui-card-actions audio-card"></div>
       <div class="hint">左键播放，右键编辑</div>
     </div>
@@ -52,21 +58,20 @@
     </div>
   </div>
 
-  <div class="mdui-card editor">
-    <div class="mdui-list mdui-list-dense" id="edit-list"></div>
-    <div class="mdui-card-actions">
-      <button class="mdui-btn mdui-color-indigo" onclick="handleSave()">
-        <i class="mdui-icon material-icons mdui-icon-left">save</i>
-        保存
-      </button>
-      <button class="mdui-btn mdui-color-red" onclick="handleReset()">
-        <i class="mdui-icon material-icons mdui-icon-left">refresh</i>
-        重置
-      </button>
+  <div class="mdui-dialog" id="dialog-editor">
+    <div class="mdui-dialog-title">自定义时间</div>
+    <div class="mdui-dialog-content">
+      <div class="mdui-list mdui-list-dense" id="edit-list"></div>
+    </div>
+    <div class="mdui-dialog-actions">
+      <button class="mdui-btn mdui-ripple mdui-float-left" mdui-dialog-cancel>重置</button>
+      <button class="mdui-btn mdui-ripple" mdui-dialog-close>取消</button>
+      <button class="mdui-btn mdui-ripple" mdui-dialog-confirm>保存</button>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/mdui@1.0.2/dist/js/mdui.min.js"></script>
+  <script src="localforage.min.js"></script>
   <script>
     const $ = mdui.$;
     function TtoMMSS(t) {
@@ -74,9 +79,8 @@
       return `${m < 10 ? 0 : ''}${m}:${s < 10 ? 0 : ''}${s}`
     }
 
-    let mode, songPreset, songBuf = []
+    let timer, mode, songPreset, songBuf = []
   </script>
-  <script src="localforage.min.js"></script>
   <script src="stroage.js"></script>
   <script src="timer.js"></script>
   <script src="main.js"></script>

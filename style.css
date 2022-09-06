@@ -17,6 +17,12 @@ body {
   }
 }
 
+.list-box .mdui-card-actions {
+  background-color: #ebebeb;
+  display: flex;
+  justify-content: center;
+}
+
 .mdui-container {
   display: flex;
   flex-direction: column;
@@ -38,6 +44,15 @@ body {
   border-radius: 6px;
   font-weight: 600;
 }
+.mdui-btn.tight {
+  min-width: 40px;
+}
+.mdui-card-actions .mdui-btn {
+  margin: 0 4px;
+}
+.mdui-btn-icon {
+  border-radius: 100%;
+}
 
 .audio-card {
   text-align: center;
@@ -51,7 +66,7 @@ body {
 .audio-card-item {
   width: 80px;
   height: 80px;
-  border-radius: 12px;
+  border-radius: 6px;
   padding: 6px;
   margin: 6px;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1),
@@ -90,6 +105,8 @@ body {
 .list-box {
   width: 300px;
   height: calc(100vh - 40px);
+  display: flex;
+  flex-direction: column;
 }
 .list-box > * {
   transition: all 0.3s;
@@ -128,18 +145,17 @@ i.loading {
   }
 }
 
+/* Thanks Epic Spinner */
 .half-circle-spinner,
 .half-circle-spinner * {
   box-sizing: border-box;
 }
-
 .half-circle-spinner {
   width: 30px;
   height: 30px;
   border-radius: 100%;
   position: relative;
 }
-
 .half-circle-spinner .circle {
   content: '';
   position: absolute;
@@ -148,17 +164,14 @@ i.loading {
   border-radius: 100%;
   border: calc(30px / 6) solid transparent;
 }
-
 .half-circle-spinner .circle.circle-1 {
   border-top-color: #405973;
   animation: half-circle-spinner-animation 1s infinite;
 }
-
 .half-circle-spinner .circle.circle-2 {
   border-bottom-color: #405973;
   animation: half-circle-spinner-animation 1s infinite alternate;
 }
-
 @keyframes half-circle-spinner-animation {
   0% {
     transform: rotate(0deg);
@@ -167,37 +180,27 @@ i.loading {
     transform: rotate(360deg);
   }
 }
+/* Thanks Epic Spinner */
 
-.editor {
-  width: 300px;
-  height: calc(100vh - 40px);
-  display: flex;
-  flex-direction: column;
-}
-.editor > * {
-  transition: all 0.3s;
-}
-.editor > .mdui-list {
+.mdui-list {
   overflow-y: scroll;
+  flex: 1;
 }
-.editor input {
+#dialog-editor input {
   text-align: center;
-  flex: 1;
+  outline: none;
+  font-size: 1.2em;
+  border: #405973 1px solid;
+  border-radius: 600px;
+  padding-left: 16px;
+  padding-right: 8px;
 }
-.editor .mdui-list-item-content {
+#dialog-editor .mdui-list-item-content {
   display: flex;
 }
-.editor select {
-  flex: 1;
-  padding-right: 0;
-  margin: 0 8px;
-}
-.editor .mdui-card-actions {
-  background-color: #ebebeb;
-}
-.editor .mdui-card-actions {
-  display: flex;
-  justify-content: center;
+#dialog-editor select {
+  flex: 0.2;
+  margin: 0 16px;
 }
 
 .mdui-textfield-error,
