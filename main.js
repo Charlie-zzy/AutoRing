@@ -224,6 +224,8 @@ function toggleMute() {
   $('#mute-icon').text(`volume_${isMuted ? 'up' : 'off'}`)
   $('#mute-icon').parent().toggleClass('mdui-color-indigo')
 }
+
+let selectText
 function initTimer() {
   timer = new Timer()
   timer.setMutation((id, d) => {
@@ -239,7 +241,7 @@ function initTimer() {
     }
   })
 
-  const selectText = `<select class="mdui-select">
+  selectText = `<select class="mdui-select">
 ${songPreset.map(({ title }, id) => `<option value="${id}">${title}</option>`).join('')}
 </select>`
   $('#edit-list').empty()
