@@ -1,8 +1,6 @@
 const audioCtx = new AudioContext(),
   GainNode = audioCtx.createGain()
-let BufferNode,
-  isMuted = true,
-  isNew = false
+let isMuted = true
 // 连 连 看
 GainNode.connect(audioCtx.destination)
 
@@ -288,4 +286,4 @@ function handleEdit() {
   dialog.open()
 }
 
-if(navigator?.userAgentData?.mobile) $('.hint').text('点击播放，长按编辑')
+if (navigator?.userAgentData?.mobile) $('.hint').text('点击播放，长按编辑')
