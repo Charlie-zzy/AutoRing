@@ -84,9 +84,9 @@ songPreset.forEach(({ title }, id) => {
       const title = $name.val(), url = $url.val()
       if (url != prevURL) {
         let result = null
-        if (url.match(/(?<=song\??id=)\d+/) != null) // 匹配成功
-          result = url.match(/(?<=song\??id=)\d+/)[0]
-        else if (url.match(/[^\d]/) != null) // 含有未知字符
+        if (url.match(new RegExp('(?<=song\??id=)\d+')) != null) // 匹配成功
+          result = url.match(new RegExp('(?<=song\??id=)\d+'))[0]
+        else if (url.match(new RegExp('[^\d]')) != null) // 含有未知字符
           $error.text('是无法理解的内容呢qwq')
         else if (url != "") // 纯数字，推测为 ID
           result = parseInt(url)
