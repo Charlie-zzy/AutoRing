@@ -287,3 +287,5 @@ function handleEdit() {
   })
   dialog.open()
 }
+
+if(navigator?.userAgentData?.mobile) $('.hint').text('点击播放，长按编辑')
